@@ -1,0 +1,13 @@
+{
+  "name": "ghost_crafter",
+  "version": "1.0.0",
+  "title": "Ghost crafter",
+  "author": "Telkine2018",
+  "contact": "",
+  "homepage": "",
+  "description": "Automaticallt start crafting ghosts around player if there are missing items in inventory / logistic network / bot payload",
+  "factorio_version": "2.0",
+  "dependencies": [
+      "base >= 2.0.0"
+ ]
+}
