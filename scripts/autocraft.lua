@@ -8,6 +8,7 @@ local function scan_sector()
     for _, player in pairs(game.players) do
         local autocraft = tools.get_vars(player).autocraft
         local character = player.character
+        local entity_map = {}
 
         if autocraft and player.controller_type == defines.controllers.character and character then
             local surface = player.surface
@@ -17,24 +18,25 @@ local function scan_sector()
             local ghosts = surface.find_entities_filtered { name = "entity-ghost", area = area, force = player.force }
 
             local needed = {}
-            local function add_need(proto)
+            local function add_need(proto, entity)
                 local items = proto.items_to_place_this
                 if items and #items > 0 then
                     local item = items[1]
                     needed[item.name] = (needed[item.name] or 0) + 1
+                    entity_map[item.name] = entity
                 end
             end
 
             for _, ghost in pairs(ghosts) do
                 local proto = ghost.ghost_prototype
-                add_need(proto)
+                add_need(proto, ghost)
             end
 
             local upgrades = surface.find_entities_filtered { area = area, force = player.force, to_be_upgraded = true }
             if upgrades and #upgrades > 0 then
                 for _, u in pairs(upgrades) do
                     local proto = u.get_upgrade_target()
-                    add_need(proto)
+                    add_need(proto, u)
                 end
             end
 
@@ -72,7 +74,6 @@ local function scan_sector()
 
             network = character.surface.find_logistic_network_by_position(character.position, player.force_index)
             if network then
-
                 for item, _ in pairs(needed) do
                     local count = network.get_item_count(item)
                     if count and count > 0 then
@@ -104,6 +105,24 @@ local function scan_sector()
                                         amount = product.amount
                                         break
                                     end
+                                end
+                                local missing, used = tools.find_missing_ingredients(player.character, item, count)
+                                if missing and table_size(missing) > 0 then
+                                    for missing_item, missing_count in pairs(missing) do
+                                        local entity = entity_map[item]
+                                        if not (entity and entity.valid) then
+                                            player.create_local_flying_text({
+                                                text = { "ghost_crafter.item_message", missing_count, "[item=" .. missing_item .. "]" },
+                                                create_at_cursor = true
+                                            })
+                                        else
+                                            player.create_local_flying_text({
+                                                text = { "ghost_crafter.item_message", missing_count, "[item=" .. missing_item .. "]" },
+                                                position = entity.position
+                                            })
+                                        end
+                                    end
+                                    return
                                 end
                                 count = math.ceil((count - current_count) / amount)
                                 player.begin_crafting { recipe = recipe, count = count }
