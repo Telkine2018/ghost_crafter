@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "factoriomod",
+            "request": "launch",
+            "name": "Factorio Mod Debug (Settings & Data)",
+            "hookSettings": false,
+            "hookData": false,
+            "hookMode": "debug",
+            "hookControl": [
+                "ghost_crafter"
+            ],
+            "adjustMods": {
+                "ghost_crafter": true
+            }
+        },
+        {
+            "type": "factoriomod",
+            "request": "launch",
+            "name": "Factorio Mod Debug (Profile)",
+            "hookMode": "profile",
+            "hookControl": ["ghost_crafter" ],
+            "adjustMods": {
+                "ghost_crafter" : true
+            }
+        }
+
+    ]
+}

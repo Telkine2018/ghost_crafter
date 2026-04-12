@@ -5,7 +5,7 @@
   "author": "Telkine2018",
   "contact": "",
   "homepage": "",
-  "description": "Automaticallt start crafting ghosts around player if there are missing items in inventory / logistic network / bot payload",
+  "description": "Scan ghosts around player in 40x40 area. Handcraft items not found in inventory or logistic network or bot payload",
   "factorio_version": "2.0",
   "dependencies": [
       "base >= 2.0.0"

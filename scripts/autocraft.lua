@@ -97,6 +97,7 @@ local function scan_sector()
                     }
 
                     if #recipes > 0 then
+                        local y_delta = 0
                         for _, recipe in pairs(recipes) do
                             if crafting_categories[recipe.category] then
                                 local amount
@@ -116,9 +117,12 @@ local function scan_sector()
                                                 create_at_cursor = true
                                             })
                                         else
+                                            local position = entity.position
+                                            local y = position.y + y_delta
+                                            y_delta = y_delta + 0.5
                                             player.create_local_flying_text({
                                                 text = { "ghost_crafter.item_message", missing_count, "[item=" .. missing_item .. "]" },
-                                                position = entity.position
+                                                position = {position.x, y}
                                             })
                                         end
                                     end
