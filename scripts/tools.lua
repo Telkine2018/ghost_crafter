@@ -1272,7 +1272,7 @@ end
 
 local recipe_logging = true
 local terminal_products = {
-    ["stone-brick"]=true
+    ["stone-brick"] = true
 }
 
 ---@class CraftStack
@@ -1290,6 +1290,16 @@ function tools.find_missing_ingredients(character, item, count)
 
     local crafting_categories = character.prototype.crafting_categories
     if not crafting_categories then return nil end
+
+    local function is_crafting_category(categories)
+        if not categories then return false end
+        for _, c in pairs(categories) do
+            if crafting_categories[c] then
+                return true
+            end
+        end
+        return false
+    end
 
     local contents = inv.get_contents();
     local content_map = {}
@@ -1329,11 +1339,9 @@ function tools.find_missing_ingredients(character, item, count)
     ---@param current_item string
     function complete_items(current_item)
         if completion[current_item] then
-            
             --- complete items
             local to_complete = { [current_item] = true }
             while (true) do
-
                 local complete_item, _ = next(to_complete)
                 if complete_item then
                     local complete_list = completion[complete_item]
@@ -1360,7 +1368,7 @@ function tools.find_missing_ingredients(character, item, count)
         local count = to_process_current.count
 
         if recipe_logging then
-            log("process: " .. current_item .. " x " ..count)
+            log("process: " .. current_item .. " x " .. count)
         end
 
         local content_count = (content_map[current_item] or 0)
@@ -1372,7 +1380,7 @@ function tools.find_missing_ingredients(character, item, count)
             complete_items(current_item)
 
             if recipe_logging then
-                log("found: " .. current_item .. " x " ..count)
+                log("found: " .. current_item .. " x " .. count)
             end
         else
             if content_count > 0 then
@@ -1395,7 +1403,7 @@ function tools.find_missing_ingredients(character, item, count)
                         goto skip
                     end
                     if recipe.hidden_from_player_crafting then goto skip end
-                    if crafting_categories[recipe.category] then
+                    if is_crafting_category(recipe.categories) then
                         -- Get iteration count of recipe
                         for _, product in pairs(recipe.products) do
                             if product.name == current_item then

@@ -89,6 +89,16 @@ local function scan_sector()
 
             local inv = player.get_main_inventory()
 
+            local function is_crafting_category(categories)
+                if not categories then return false end
+                for _, c in pairs(categories) do
+                    if crafting_categories[c] then
+                        return true
+                    end
+                end
+                return false
+            end
+
             for item, count in pairs(needed) do
                 local current_count = (stock[item] or 0) + (inv and inv.get_item_count(item) or 0)
                 if current_count < count then
@@ -99,7 +109,7 @@ local function scan_sector()
                     if #recipes > 0 then
                         local y_delta = 0
                         for _, recipe in pairs(recipes) do
-                            if crafting_categories[recipe.category] then
+                            if is_crafting_category(recipe.categories) then
                                 local amount
                                 for _, product in pairs(recipe.products) do
                                     if product.name == item then
@@ -122,7 +132,7 @@ local function scan_sector()
                                             y_delta = y_delta + 0.5
                                             player.create_local_flying_text({
                                                 text = { "ghost_crafter.item_message", missing_count, "[item=" .. missing_item .. "]" },
-                                                position = {position.x, y}
+                                                position = { position.x, y }
                                             })
                                         end
                                     end
