@@ -1284,7 +1284,9 @@ local terminal_products = {
 ---@param  count integer
 ---@return {[string]:integer}?
 ---@return {[string]:integer}?
+---@return LuaRecipe?
 function tools.find_missing_ingredients(character, item, count)
+    local new_recipe = nil
     local inv = character.get_main_inventory()
     if not inv then return nil end
 
@@ -1419,6 +1421,9 @@ function tools.find_missing_ingredients(character, item, count)
                         if recipe_logging then
                             log("apply recipe: " .. recipe.name)
                         end
+                        if current_item == item then
+                            new_recipe = recipe
+                        end
 
                         local last_item
                         local insert_index = to_process_index
@@ -1467,7 +1472,7 @@ function tools.find_missing_ingredients(character, item, count)
             end
         end
     end
-    return missing, used
+    return missing, used, new_recipe
 end
 
 return tools

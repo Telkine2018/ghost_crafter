@@ -117,7 +117,7 @@ local function scan_sector()
                                         break
                                     end
                                 end
-                                local missing, used = tools.find_missing_ingredients(player.character, item, count)
+                                local missing, used, new_recipe = tools.find_missing_ingredients(player.character, item, count)
                                 if missing and table_size(missing) > 0 then
                                     for missing_item, missing_count in pairs(missing) do
                                         local entity = entity_map[item]
@@ -139,7 +139,7 @@ local function scan_sector()
                                     return
                                 end
                                 count = math.ceil((count - current_count) / amount)
-                                player.begin_crafting { recipe = recipe, count = count }
+                                player.begin_crafting { recipe = new_recipe, count = count }
                                 return
                             end
                         end
